@@ -1,0 +1,21 @@
+version: '3.8'
+
+networks:
+  stokei-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+
+services:
+  redis:
+    image: bitnami/redis:7.0.15
+    container_name: redis
+    environment:
+      REDIS_PASSWORD: 'redis'
+    ports:
+      - '16379:6379'
+    volumes:
+      - redis-data:/bitnami/redis/data
+    networks:
+      - stokei-network

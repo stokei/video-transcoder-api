@@ -1,0 +1,20 @@
+gitSafeReplacementChar: '-'
+openPR: true
+autoCloseIssue: true
+copyIssueLabelsToPR: true
+copyIssueAssigneeToPR: true
+commentMessage: 'Branch ${branchName} created for issue: ${issue.title}'
+branchName: short
+branches:
+  - label: 'TYPE: HOTFIX'
+    prefix: hotfix/
+  - label: 'TYPE: IMPROVEMENT'
+    prefix: improvement/
+  - label: 'TYPE: FEATURE'
+    prefix: feature/
+  - label: 'TYPE: BUG'
+    prefix: bugfix/
+  - label: 'TYPE: TASK'
+    prefix: task/
+  - label: '*'
+    skip: true
