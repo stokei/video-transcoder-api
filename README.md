@@ -9,12 +9,11 @@
 yarn docker:up
 ```
 
-2) Install [AwsLocal CLI](https://docs.localstack.cloud/user-guide/integrations/aws-cli/#localstack-aws-cli-awslocal)
-
-3) Create a sample bucket
+3) Create a sample bucket on http://localhost:9001
 
 ```bash
-awslocal s3api create-bucket --bucket sample-bucket
+user: minioadmin
+password: minioadmin
 ```
 
 4) Set enviroment variables

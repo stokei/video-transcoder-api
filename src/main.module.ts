@@ -5,6 +5,7 @@ import { TerminusModule } from '@nestjs/terminus';
 
 import { Controllers } from './controllers';
 import {
+  IS_PRODUCTION,
   REDIS_HOST,
   REDIS_PASSWORD,
   REDIS_PORT,
@@ -22,6 +23,9 @@ import { Services } from './services';
         attempts: 3
       },
       connection: {
+        ...(IS_PRODUCTION && {
+          tls: {}
+        }),
         host: REDIS_HOST,
         port: REDIS_PORT,
         username: REDIS_USERNAME,
