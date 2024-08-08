@@ -1,7 +1,6 @@
 import { S3Client } from '@aws-sdk/client-s3';
 
 import {
-  STORAGE_BUCKET,
   STORAGE_ENDPOINT,
   STORAGE_FILE_BASE_URL,
   STORAGE_KEY,
@@ -20,5 +19,5 @@ export const s3Client = new S3Client({
 });
 
 export const getBucketFileURL = ({ key }: { key: string }) => {
-  return `${STORAGE_FILE_BASE_URL}/${STORAGE_BUCKET}/${key}`;
+  return `${STORAGE_FILE_BASE_URL}/${key}`;
 };
