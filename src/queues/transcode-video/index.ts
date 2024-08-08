@@ -110,34 +110,9 @@ export class TranscodeVideoQueueConsumer extends WorkerHost {
             }
             return resolve(undefined);
           })
-          .on('progress', async (progress) => {
-            if (progress.frames) {
-              const segmentFiles = (await fs.readdir(segmentsDir))?.filter(
-                (file) => file.endsWith('.ts')
-              );
-              for (const segmentFile of segmentFiles) {
-                const segmentPath = join(segmentsDir, segmentFile);
-                const existsUploadSegment = existsSync(
-                  `${segmentPath}.uploaded`
-                );
-                if (!existsUploadSegment) {
-                  await this.uploadSegment(segmentPath);
-                  await fs.writeFile(`${segmentPath}.uploaded`, '');
-                }
-              }
-            }
-          })
           .run();
       });
     } catch (error) {}
-  }
-
-  private async uploadSegment(segmentPath: string) {
-    const response = await this.uploadFileService.execute({
-      path: segmentPath,
-      isPublic: true
-    });
-    return response;
   }
 
   private async uploadPlaylistAndRemoveOldFiles({
@@ -152,10 +127,37 @@ export class TranscodeVideoQueueConsumer extends WorkerHost {
       contentType: 'application/vnd.apple.mpegurl'
     });
     if (response) {
+      await this.uploadAllSegments({ fileId });
       await fs.rm(filePathMapper.output, {
         recursive: true
       });
     }
     return response;
+  }
+
+  private async uploadSegment(segmentPath: string) {
+    const response = await this.uploadFileService.execute({
+      path: segmentPath,
+      isPublic: true
+    });
+    return response;
+  }
+
+  private async uploadAllSegments({ fileId }: { fileId: string }) {
+    const filePathMapper = new FilePathMapper(fileId);
+    const segmentsDir = filePathMapper.output;
+    const segmentFiles = (await fs.readdir(segmentsDir))?.filter((file) =>
+      file.endsWith('.ts')
+    );
+    await Promise.all(
+      segmentFiles?.map(async (segmentFile) => {
+        const segmentPath = join(segmentsDir, segmentFile);
+        const existsUploadSegment = existsSync(`${segmentPath}.uploaded`);
+        if (!existsUploadSegment) {
+          await this.uploadSegment(segmentPath);
+          await fs.writeFile(`${segmentPath}.uploaded`, '');
+        }
+      })
+    );
   }
 }
