@@ -5,17 +5,10 @@ export class TranscodeVideoDTO {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  file: string;
+  fileId: string;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  url: string;
+  source: string;
 }
-
-/*
-export interface TranscodeVideoDTO {
-  file: string;
-  url: string;
-}
-  */

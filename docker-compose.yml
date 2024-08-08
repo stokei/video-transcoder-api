@@ -6,6 +6,7 @@ networks:
 
 volumes:
   redis-data:
+  storage-dev-data:
 
 services:
   redis:
@@ -19,3 +20,15 @@ services:
       - redis-data:/bitnami/redis/data
     networks:
       - stokei-network
+  storage-dev:
+    container_name: storage-dev
+    image: localstack/localstack:3.6.0
+    ports:
+      - 4566:4566
+      - 4571:4571
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      - DEBUG=${DEBUG:-0}
+    volumes:
+      - storage-dev-data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock

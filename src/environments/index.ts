@@ -19,10 +19,12 @@ export const REDIS_PORT = parseInt(process.env.REDIS_PORT) || 80;
 export const REDIS_USERNAME: string = process.env.REDIS_USERNAME;
 export const REDIS_PASSWORD: string = process.env.REDIS_PASSWORD;
 
-export const DIGITALOCEAN_BUCKET: string = process.env.DIGITALOCEAN_BUCKET;
-export const DIGITALOCEAN_KEY: string = process.env.DIGITALOCEAN_KEY;
-export const DIGITALOCEAN_SECRET_KEY: string =
-  process.env.DIGITALOCEAN_SECRET_KEY;
+export const STORAGE_BUCKET: string = process.env.STORAGE_BUCKET;
+export const STORAGE_KEY: string = process.env.STORAGE_KEY;
+export const STORAGE_SECRET_KEY: string = process.env.STORAGE_SECRET_KEY;
+export const STORAGE_ENDPOINT: string = process.env.STORAGE_ENDPOINT;
+export const STORAGE_REGION: string = process.env.STORAGE_REGION;
+export const STORAGE_FILE_BASE_URL: string = process.env.STORAGE_FILE_BASE_URL;
 
-export const STOKEI_API_BASE_URL: string =
-  process.env.STOKEI_API_BASE_URL || 'http://localhost:4000';
+export const NOTIFY_VIDEO_STATUS_URL: string =
+  process.env.NOTIFY_VIDEO_STATUS_URL || 'http://localhost:4000';

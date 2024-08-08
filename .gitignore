@@ -4,6 +4,7 @@
 /build
 docker-images
 /tmp
+/videos
 
 # Logs
 logs

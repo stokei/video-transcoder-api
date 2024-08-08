@@ -1,6 +1,8 @@
+import { HttpModule } from '@nestjs/axios';
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
+
 import { Controllers } from './controllers';
 import {
   REDIS_HOST,
@@ -13,6 +15,7 @@ import { Services } from './services';
 
 @Module({
   imports: [
+    HttpModule,
     TerminusModule,
     BullModule.forRoot({
       defaultJobOptions: {

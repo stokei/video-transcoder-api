@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { VideosTranscodeController } from '.';
+
 import { TranscodeVideoService } from '@/services/videos/transcode-video';
+
+import { VideosTranscodeController } from '.';
 
 describe('VideosTranscodeController', () => {
   let videosTranscodeController: VideosTranscodeController;
