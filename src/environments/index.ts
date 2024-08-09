@@ -24,7 +24,3 @@ export const STORAGE_KEY: string = process.env.STORAGE_KEY;
 export const STORAGE_SECRET_KEY: string = process.env.STORAGE_SECRET_KEY;
 export const STORAGE_ENDPOINT: string = process.env.STORAGE_ENDPOINT;
 export const STORAGE_REGION: string = process.env.STORAGE_REGION;
-export const STORAGE_FILE_BASE_URL: string = process.env.STORAGE_FILE_BASE_URL;
-
-export const NOTIFY_VIDEO_STATUS_URL: string =
-  process.env.NOTIFY_VIDEO_STATUS_URL || 'http://localhost:4000';

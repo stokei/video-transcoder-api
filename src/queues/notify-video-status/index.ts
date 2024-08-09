@@ -5,7 +5,6 @@ import { Job } from 'bullmq';
 import { firstValueFrom } from 'rxjs';
 
 import { NotifyVideoStatusDTO } from '@/dtos/videos/notify-video-status.dto';
-import { NOTIFY_VIDEO_STATUS_URL } from '@/environments';
 
 import { NOTIFY_VIDEO_STATUS_QUEUE_CONFIG } from './config';
 
@@ -21,7 +20,7 @@ export class NotifyVideoStatusQueueConsumer extends WorkerHost {
     const data = job.data;
     try {
       const responseNotifyVideoStatus = await firstValueFrom(
-        this.httpService.post(NOTIFY_VIDEO_STATUS_URL, data)
+        this.httpService.post(data?.notificationUrl, data)
       );
       if (responseNotifyVideoStatus) {
         return;

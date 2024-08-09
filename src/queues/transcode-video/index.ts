@@ -7,7 +7,6 @@ import { join } from 'path';
 import { PassThrough } from 'stream';
 
 import { ffmpeg } from '@/clients/ffmpeg';
-import { getBucketFileURL } from '@/clients/s3-client';
 import { TranscodeVideoDTO } from '@/dtos/videos/transcode-video.dto';
 import { VideoStatus } from '@/enums/video-status.enum';
 import { FilePathMapper } from '@/mappers/file-path';
@@ -27,8 +26,12 @@ export class TranscodeVideoQueueConsumer extends WorkerHost {
 
   async process(job: Job<TranscodeVideoDTO, any, string>) {
     const data = job.data;
+    const baseNotifyVideoData = {
+      fileId: data?.fileId,
+      notificationUrl: data?.notificationUrl
+    };
     await this.notifyVideoStatusService.execute({
-      fileId: data.fileId,
+      ...baseNotifyVideoData,
       status: VideoStatus.ENCODING,
       duration: 0,
       size: 0
@@ -37,13 +40,13 @@ export class TranscodeVideoQueueConsumer extends WorkerHost {
       const transcoded = await this.downloadAndTranscodeVideo(data);
       if (transcoded) {
         await this.notifyVideoStatusService.execute({
-          fileId: data.fileId,
+          ...baseNotifyVideoData,
           status: VideoStatus.COMPLETED,
           ...transcoded
         });
       } else {
         await this.notifyVideoStatusService.execute({
-          fileId: data.fileId,
+          ...baseNotifyVideoData,
           status: VideoStatus.FAILED,
           errorMessage: `Error transcoding video for job -> ${job.id}`,
           ...transcoded
@@ -51,7 +54,7 @@ export class TranscodeVideoQueueConsumer extends WorkerHost {
       }
     } catch (error) {
       await this.notifyVideoStatusService.execute({
-        fileId: data.fileId,
+        ...baseNotifyVideoData,
         status: VideoStatus.FAILED,
         duration: 0,
         size: 0,
@@ -64,7 +67,6 @@ export class TranscodeVideoQueueConsumer extends WorkerHost {
     fileId,
     source
   }: TranscodeVideoDTO): Promise<{
-    url: string;
     duration: number;
     size: number;
   }> {
@@ -104,8 +106,7 @@ export class TranscodeVideoQueueConsumer extends WorkerHost {
             if (response) {
               return resolve({
                 duration: 0,
-                size: 0,
-                url: getBucketFileURL({ key: filePathMapper.playlist })
+                size: 0
               });
             }
             return resolve(undefined);

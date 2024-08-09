@@ -16,7 +16,7 @@ export class NotifyVideoStatusDTO {
 
   @IsString()
   @ApiProperty()
-  url?: string;
+  notificationUrl: string;
 
   @IsString()
   @ApiProperty()

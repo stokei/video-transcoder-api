@@ -11,4 +11,9 @@ export class TranscodeVideoDTO {
   @IsNotEmpty()
   @ApiProperty()
   source: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  notificationUrl: string;
 }

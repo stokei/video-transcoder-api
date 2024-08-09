@@ -1,0 +1,41 @@
+version: '3.8'
+
+networks:
+  stokei-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+
+services:
+  video-transcode-api:
+    image: stokei/video-transcode-api:latest
+    container_name: video-transcode-api
+    ports:
+      - 80:80
+    depends_on:
+      - redis
+    networks:
+      - stokei-network
+    environment:
+      NODE_ENV: production
+      HOST: video-transcode-api
+      PORT: 80
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      STORAGE_BUCKET: ${STORAGE_BUCKET}
+      STORAGE_KEY: ${STORAGE_KEY}
+      STORAGE_SECRET_KEY: ${STORAGE_SECRET_KEY}
+      STORAGE_ENDPOINT: ${STORAGE_ENDPOINT}
+      STORAGE_REGION: ${STORAGE_REGION}
+
+  redis:
+    image: bitnami/redis:7.0.15
+    container_name: redis
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - redis-data:/bitnami/redis/data
+    networks:
+      - stokei-network
