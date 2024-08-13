@@ -1,5 +1,3 @@
-version: '3.8'
-
 networks:
   stokei-network:
     driver: bridge
@@ -13,7 +11,7 @@ services:
     image: stokei/video-transcoder-api:latest
     container_name: video-transcoder-api
     ports:
-      - 5000:5000
+      - ${PORT}:${PORT}
     depends_on:
       - redis
       - storage-dev
@@ -22,7 +20,7 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV}
       HOST: ${HOST}
-      PORT: 5000
+      PORT: ${PORT}
       URL: ${URL}
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
@@ -56,7 +54,7 @@ services:
     networks:
       - stokei-network
     environment:
-      - MINIO_ROOT_USER=minioadmin
-      - MINIO_ROOT_PASSWORD=minioadmin
+      - MINIO_ROOT_USER=${STORAGE_DEV_USERNAME}
+      - MINIO_ROOT_PASSWORD=${STORAGE_DEV_PASSWORD}
     volumes:
       - storage-dev-data:/data

@@ -12,7 +12,7 @@ export class NotifyVideoStatusDTO {
   @IsEnum(VideoStatus)
   @IsNotEmpty()
   @ApiProperty()
-  status: string;
+  status: VideoStatus;
 
   @IsString()
   @ApiProperty()
@@ -29,4 +29,14 @@ export class NotifyVideoStatusDTO {
   @IsNumber()
   @ApiProperty()
   size: number;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  mimetype: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  extension: string;
 }

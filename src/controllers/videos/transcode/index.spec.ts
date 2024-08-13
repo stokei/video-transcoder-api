@@ -21,11 +21,24 @@ describe('VideosTranscodeController', () => {
   it('should return successfully when video is sended', () => {
     expect(
       videosTranscodeController.execute({
-        file: '',
-        url: ''
+        fileId: 'file1',
+        source: 'https://storage.com/file-sorce',
+        notificationUrl: 'https://google.com'
       })
     ).toBe({
       ok: true
+    });
+  });
+
+  it('should return error when one data is empty', () => {
+    expect(
+      videosTranscodeController.execute({
+        fileId: '',
+        source: 'https://storage.com/file-sorce',
+        notificationUrl: 'https://google.com'
+      })
+    ).toBe({
+      ok: false
     });
   });
 });

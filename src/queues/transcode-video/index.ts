@@ -12,6 +12,9 @@ import { VideoStatus } from '@/enums/video-status.enum';
 import { FilePathMapper } from '@/mappers/file-path';
 import { UploadFileService } from '@/services/uploads/upload-file';
 import { NotifyVideoStatusService } from '@/services/videos/notify-video-status';
+import { convertDurationFromStringToSeconds } from '@/utils/convert-duration-from-string-to-seconds';
+import { getFolderSize } from '@/utils/get-folder-size';
+import { getStreamSize } from '@/utils/get-stream-size';
 
 import { TRANSCODE_VIDEO_QUEUE_CONFIG } from './config';
 
@@ -28,7 +31,9 @@ export class TranscodeVideoQueueConsumer extends WorkerHost {
     const data = job.data;
     const baseNotifyVideoData = {
       fileId: data?.fileId,
-      notificationUrl: data?.notificationUrl
+      notificationUrl: data?.notificationUrl,
+      mimetype: 'video/mp4',
+      extension: 'm3u8'
     };
     await this.notifyVideoStatusService.execute({
       ...baseNotifyVideoData,
@@ -67,6 +72,7 @@ export class TranscodeVideoQueueConsumer extends WorkerHost {
     fileId,
     source
   }: TranscodeVideoDTO): Promise<{
+    mimetype: string;
     duration: number;
     size: number;
   }> {
@@ -79,16 +85,16 @@ export class TranscodeVideoQueueConsumer extends WorkerHost {
         }
         const playlistPath = filePathMapper.playlist;
 
-        const passthroughStream = new PassThrough();
-        const response = await axios({
+        const originalFileStream = new PassThrough();
+        const originalFileRequest = await axios({
           method: 'get',
           url: source,
           responseType: 'stream'
         });
-        response.data.pipe(passthroughStream);
-
+        originalFileRequest.data.pipe(originalFileStream);
+        let durationString: string;
         ffmpeg()
-          .input(passthroughStream)
+          .input(originalFileStream)
           .output(playlistPath)
           .outputOptions([
             '-preset superfast',
@@ -99,14 +105,27 @@ export class TranscodeVideoQueueConsumer extends WorkerHost {
             filePathMapper.mountSegmentName()
           ])
           .on('error', reject)
+          .on('progress', (progress) => {
+            durationString = progress.timemark;
+          })
           .on('end', async () => {
-            const response = await this.uploadPlaylistAndRemoveOldFiles({
-              fileId
-            });
-            if (response) {
+            const outputFileSize = await getFolderSize(
+              join(process.cwd(), filePathMapper.output)
+            );
+            const originalFileSize = parseFloat(
+              originalFileRequest.headers?.['content-length']
+            );
+            const duration = convertDurationFromStringToSeconds(durationString);
+            const uploadedPlaylist = await this.uploadPlaylistAndRemoveOldFiles(
+              {
+                fileId
+              }
+            );
+            if (uploadedPlaylist) {
               return resolve({
-                duration: 0,
-                size: 0
+                mimetype: originalFileRequest.headers?.['content-type'],
+                duration,
+                size: outputFileSize + originalFileSize
               });
             }
             return resolve(undefined);
@@ -139,7 +158,8 @@ export class TranscodeVideoQueueConsumer extends WorkerHost {
   private async uploadSegment(segmentPath: string) {
     const response = await this.uploadFileService.execute({
       path: segmentPath,
-      isPublic: true
+      isPublic: true,
+      contentType: 'video/MP2T'
     });
     return response;
   }

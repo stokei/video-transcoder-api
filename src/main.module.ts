@@ -5,10 +5,10 @@ import { TerminusModule } from '@nestjs/terminus';
 
 import { Controllers } from './controllers';
 import {
-  IS_PRODUCTION,
   REDIS_HOST,
   REDIS_PASSWORD,
   REDIS_PORT,
+  REDIS_TLS,
   REDIS_USERNAME
 } from './environments';
 import { Queues, QueuesProcessors } from './queues';
@@ -23,8 +23,10 @@ import { Services } from './services';
         attempts: 3
       },
       connection: {
-        ...(IS_PRODUCTION && {
-          tls: {}
+        ...(REDIS_TLS && {
+          tls: {
+            rejectUnauthorized: false
+          }
         }),
         host: REDIS_HOST,
         port: REDIS_PORT,

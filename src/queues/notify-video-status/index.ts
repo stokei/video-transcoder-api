@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
+import { convertToISODateString } from '@stokei/nestjs';
 import { Job } from 'bullmq';
 import { firstValueFrom } from 'rxjs';
 
@@ -17,7 +18,10 @@ export class NotifyVideoStatusQueueConsumer extends WorkerHost {
   }
 
   async process(job: Job<NotifyVideoStatusDTO, any, string>) {
-    const data = job.data;
+    const data = {
+      ...job.data,
+      createdAt: convertToISODateString(Date.now())
+    };
     try {
       const responseNotifyVideoStatus = await firstValueFrom(
         this.httpService.post(data?.notificationUrl, data)
