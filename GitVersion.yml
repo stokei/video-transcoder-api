@@ -1,46 +1,37 @@
+assembly-versioning-scheme: MajorMinorPatch
+mode: ContinuousDeployment
 branches:
   hotfix:
-    regex: 'hotfix[/-]'
-    source-branches: ['main', 'develop']
-    is-release-branch: true
-    increment: Patch
-    prevent-increment-of-merged-branch-version: false
+    regex: ^hotfix[/-]
     tag: ''
+    increment: Patch
+    source-branches: ['main', 'develop']
     tracks-release-branches: false
+    is-release-branch: true
 
   improvement:
-    regex: 'improvement[/-]'
-    source-branches: ['main', 'develop']
-    is-release-branch: false
-    increment: Minor
-    prevent-increment-of-merged-branch-version: false
+    regex: ^improvement[/-]
     tag: ''
+    increment: Minor
+    source-branches: ['main', 'develop']
+    tracks-release-branches: false
+    is-release-branch: true
 
   feature:
-    regex: 'feature[/-]'
-    source-branches: ['main', 'develop']
-    is-release-branch: false
+    regex: ^feature[/-]
+    tag: 'beta'
     increment: Minor
-    prevent-increment-of-merged-branch-version: false
-    tag: ''
+    source-branches: ['main', 'develop']
+    tracks-release-branches: false
+    is-release-branch: true
 
   bugfix:
-    regex: 'bugfix[/-]'
-    source-branches: ['main', 'develop']
-    is-release-branch: false
+    regex: ^bugfix[/-]
+    tag: ''
     increment: Patch
-    prevent-increment-of-merged-branch-version: false
-    tag: ''
-
-  task:
-    regex: 'task[/-]'
     source-branches: ['main', 'develop']
-    is-release-branch: false
-    increment: None
-    prevent-increment-of-merged-branch-version: true
-    tag: ''
-    
+    tracks-release-branches: false
+    is-release-branch: true
+
 ignore:
   sha: []
-  
-merge-message-formats: {}
