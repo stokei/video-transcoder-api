@@ -3,7 +3,6 @@ mode: ContinuousDeployment
 branches:
   hotfix:
     regex: ^hotfix[/-]
-    tag: ''
     increment: Patch
     source-branches: ['main', 'develop']
     tracks-release-branches: false
@@ -11,7 +10,6 @@ branches:
 
   improvement:
     regex: ^improvement[/-]
-    tag: ''
     increment: Minor
     source-branches: ['main', 'develop']
     tracks-release-branches: false
@@ -19,7 +17,6 @@ branches:
 
   feature:
     regex: ^feature[/-]
-    tag: 'beta'
     increment: Minor
     source-branches: ['main', 'develop']
     tracks-release-branches: false
@@ -27,7 +24,6 @@ branches:
 
   bugfix:
     regex: ^bugfix[/-]
-    tag: ''
     increment: Patch
     source-branches: ['main', 'develop']
     tracks-release-branches: false
